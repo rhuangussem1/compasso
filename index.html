@@ -1690,14 +1690,14 @@ async function suggestMeals(){
   const obj = objMap[S.profile.goal] || 'saúde geral';
   
   try {
-    const prompt = `Você é um chef e nutricionista. Com estes ingredientes disponíveis: "${ingrs.join(', ')}". Sugira 3 receitas focadas no objetivo de ${obj}. 
+ const prompt = `Você é um chef e nutricionista. Com estes ingredientes disponíveis: "${ingrs.join(', ')}". Sugira 3 receitas focadas no objetivo de ${obj}. 
 REGRAS OBRIGATÓRIAS: 
-1. A base da receita DEVE ser composta estritamente pelos ingredientes informados. 
-2. Inclua quantidades em gramas ou unidades (ex: 300g, 2 unidades). 
-3. Use métodos de cozimento saudáveis e saborosos (evite ferver apenas em água, prefira grelhar, assar ou refogar).
-4. Classifique em: Fácil, Médio e Difícil. 
-5. Priorize baixo teor calórico. 
-Retorne APENAS um JSON válido no formato: {"pratos":[{"nivel":"Fácil","nome":"Nome","tempo":"X min","calorias":350,"ingredientes":["300g frango","2 batatas"],"preparo":["passo 1","passo 2"]}]}`;
+1. Use os ingredientes informados como protagonistas, MAS assuma que o usuário possui o básico de despensa (alho, cebola, sal, pimenta, azeite, manteiga, temperos secos comuns).
+2. Crie APENAS pratos reais e conhecidos da culinária tradicional. É terminantemente PROIBIDO inventar receitas absurdas ou misturar texturas incompatíveis (como bater carne no liquidificador).
+3. Inclua quantidades aproximadas.
+4. Use métodos de cozimento práticos.
+5. Classifique em: Fácil, Médio e Difícil. 
+Retorne APENAS um JSON válido no formato: {"pratos":[{"nivel":"Fácil","nome":"Nome","tempo":"X min","calorias":350,"ingredientes":["300g frango","2 batatas", "temperos básicos"],"preparo":["passo 1","passo 2"]}]}`;
     
     const txt = await groq(prompt, 1500);
     const parsed = JSON.parse(txt);
