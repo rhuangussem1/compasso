@@ -1,5 +1,52 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+  <!-- ── UI POLISH PATCH (BANHO DE LOJA) ── -->
+<style>
+  :root {
+    --bg: #09090b; /* Fundo sutilmente mais escuro e sofisticado */
+    --surface: #18181b; 
+    --border: rgba(255, 255, 255, 0.08); /* Bordas mais suaves */
+  }
+  
+  /* Arredondamento e Sombras para todos os Cartões e Painéis */
+  .card, .repl-card, .tab-panel > div, #m-ex .modal-content {
+    border-radius: 16px !important;
+    box-shadow: 0 8px 24px -8px rgba(0,0,0,0.4) !important;
+    border: 1px solid var(--border) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  /* Deixar os inputs de texto mais modernos */
+  input.t-inp {
+    border-radius: 12px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid var(--border) !important;
+  }
+  input.t-inp:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px var(--adim) !important;
+  }
+
+  /* Feedback tátil nos botões (efeito de clique) */
+  button {
+    border-radius: 10px !important;
+    transition: all 0.15s ease-in-out !important;
+  }
+  button:active {
+    transform: scale(0.94) !important; /* Botão dá uma leve "afundada" */
+    opacity: 0.8;
+  }
+
+  /* Efeito "Glass" (vidro translúcido) na barra de navegação inferior */
+  #nav {
+    background: rgba(24, 24, 27, 0.75) !important;
+    backdrop-filter: blur(16px) !important; 
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 -4px 30px rgba(0,0,0,0.5) !important;
+  }
+  
+</style>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
