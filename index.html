@@ -215,7 +215,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   }
   
   /* Arredondamento e Sombras para todos os Cartões e Painéis */
-  .card, .repl-card, .tab-panel > div, #m-ex .modal-content {
+  .card, .repl-card, #m-ex .modal-content {
     border-radius: 16px !important;
     box-shadow: 0 8px 24px -8px rgba(0,0,0,0.4) !important;
     border: 1px solid var(--border) !important;
@@ -809,7 +809,7 @@ const cardioIcos = {
 };
 
 // ── GROQ API COMPILATION ──
-const GROQ_MODEL = 'llama-3.3-70b-versatile'; 
+const GROQ_MODEL = 'llama-3.1-8b-instant'; 
 
 async function groq(prompt, maxTokens = 1000) {
   const controller = new AbortController();
