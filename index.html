@@ -762,17 +762,15 @@ const cardioIcos = {
 };
 
 // ── GROQ API COMPILATION ──
-const GROQ_KEY = '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';
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL = 'llama-3.3-70b-versatile'; 
 
 async function groq(prompt, maxTokens = 1000) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s de limite
   try {
-    const res = await fetch(GROQ_URL, {
+    const res = await fetch('/api/groq', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: GROQ_MODEL, max_tokens: maxTokens, messages: [{ role: 'user', content: prompt }] }),
       signal: controller.signal
     });
@@ -781,7 +779,8 @@ async function groq(prompt, maxTokens = 1000) {
     if (data.error) throw new Error(data.error.message);
     
     let txt = data.choices[0].message.content.trim();
-txt = txt.replace(/```json/gi, '').replace(/```/g, '').trim();
+    txt = txt.replace(/```json/gi, '').replace(/
+```/g, '').trim();
     txt = txt.replace(/,\s*([\]}])/g, '$1');
     const firstBrace = txt.indexOf('{');
     const lastBrace = txt.lastIndexOf('}');
