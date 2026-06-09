@@ -779,8 +779,7 @@ async function groq(prompt, maxTokens = 1000) {
     if (data.error) throw new Error(data.error.message);
     
     let txt = data.choices[0].message.content.trim();
-    txt = txt.replace(/```json/gi, '').replace(/
-```/g, '').trim();
+    txt = txt.replace(/```json/gi, '').replace(/```/g, '').trim();
     txt = txt.replace(/,\s*([\]}])/g, '$1');
     const firstBrace = txt.indexOf('{');
     const lastBrace = txt.lastIndexOf('}');
