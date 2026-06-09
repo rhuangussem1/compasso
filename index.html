@@ -766,7 +766,7 @@ const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
 async function groq(prompt, maxTokens = 1000) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s de limite
+  const timeoutId = setTimeout(() => controller.abort(), 35000); // 35s de limite
   try {
     const res = await fetch('/api/groq', {
       method: 'POST',
@@ -1045,7 +1045,7 @@ async function startGen() {
   let workout=null;
   try {
     const equipStr = obP.local === 'academia' ? 'Academia Padrão de Musculação' : (obP.equipment || []).join(', ');
-    const prompt=`Crie um treino estruturado para: Nome: ${obP.name}, Sexo: ${obP.sexo}, Idade: ${obP.age}, Altura: ${obP.height}cm, Peso: ${obP.weight}kg, Objetivo: ${goalLbl(obP.goal)}, Biotipo: ${obP.biotipo}, Local de Treino: ${obP.local}, Equipamentos disponíveis: ${equipStr}. Observações do usuário: ${obP.suggest}. Dias por semana: ${obP.days}. REGRA OBRIGATÓRIA: Crie de 5 a 7 exercícios por dia. Para cada exercício, o campo 'tip' deve conter: 1. Passo a passo curto da execução. 2. Um erro comum a evitar. Retorne EXCLUSIVAMENTE um JSON sem markdown: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":15,"note":"Ritmo leve"},"focus":"Foco do treino","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10-12","tip":"Passo a passo + Erro comum"}]}]}.`;
+    const prompt=`Crie um treino estruturado para: Nome: ${obP.name}, Sexo: ${obP.sexo}, Idade: ${obP.age}, Altura: ${obP.height}cm, Peso: ${obP.weight}kg, Objetivo: ${goalLbl(obP.goal)}, Biotipo: ${obP.biotipo}, Local de Treino: ${obP.local}, Equipamentos: ${equipStr}. Obs: ${obP.suggest}. Dias/sem: ${obP.days}. REGRA OBRIGATÓRIA: 5 a 7 exercícios por dia. O campo 'tip' DEVE ter este exato formato: "1. Como fazer: [dica de execução]. 2. Erro comum: [o que NÃO fazer]". Retorne EXCLUSIVAMENTE um JSON sem markdown: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":15,"note":"Ritmo leve"},"focus":"Foco do treino","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10-12","tip":"1. Como fazer: ... 2. Erro comum: ..."}]}]}.`;
     const txt = await groq(prompt, 2000);
     const parsed = JSON.parse(txt);
     workout = sanitizeWorkout(parsed);
@@ -1237,7 +1237,7 @@ async function saveProfileEdits() {
   document.getElementById('gen').classList.add('show');
   try {
     const equipStr = p.local === 'academia' ? 'Academia Padrão de Musculação' : (p.equipment || []).join(', ');
-    const prompt = `Crie uma série de musculação/treino adaptada para: Sexo: ${p.sexo}, Idade: ${p.age}, Altura: ${p.height}cm, Peso: ${p.weight}kg, Objetivo: ${goalLbl(p.goal)}, Biotipo: ${p.biotipo}, Local de Treino: ${p.local}, Equipamentos: ${equipStr}. Observações: ${p.suggest}. Dias por semana: ${p.days}. REGRA OBRIGATÓRIA: Crie de 5 a 7 exercícios por dia. Para cada exercício, o campo 'tip' deve conter: 1. Passo a passo curto da execução. 2. Um erro comum a evitar. Retorne APENAS o JSON plano sem markdown ou tags: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":10,"note":"Leve"},"focus":"Foco","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10","tip":"Passo a passo + Erro comum"}]}]}`;
+    const prompt = `Crie uma série de musculação adaptada para: Sexo: ${p.sexo}, Idade: ${p.age}, Altura: ${p.height}cm, Peso: ${p.weight}kg, Objetivo: ${goalLbl(p.goal)}, Biotipo: ${p.biotipo}, Local de Treino: ${p.local}, Equipamentos: ${equipStr}. Obs: ${p.suggest}. Dias/sem: ${p.days}. REGRA OBRIGATÓRIA: 5 a 7 exercícios por dia. O campo 'tip' DEVE ter este exato formato: "1. Como fazer: [dica de execução]. 2. Erro comum: [o que NÃO fazer]". Retorne APENAS o JSON plano sem markdown ou tags: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":10,"note":"Leve"},"focus":"Foco","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10","tip":"1. Como fazer: ... 2. Erro comum: ..."}]}]}`;
     const txt = await groq(prompt, 2000);
     const parsed = JSON.parse(txt);
     S.workout = sanitizeWorkout(parsed);
@@ -1485,22 +1485,21 @@ async function feedbackEx(dayId, exIdx, liked) {
 
     try {
       const equipList = S.profile.equipment || [];
-      const txt = await groq('Sugira 2 exercícios alternativos para "' + ex.name + '" (músculo: ' + ex.muscle + '). Equipamentos disponíveis: ' + equipList.join(', ') + '. Retorne APENAS JSON: {"replacements":[{"name":"Nome","desc":"Como fazer em 2 frases.","carga":"Sugestão de carga"}]}', 500);
+      const txt = await groq('Sugira 2 exercícios alternativos para "' + ex.name + '" (músculo: ' + ex.muscle + '). Equipamentos: ' + equipList.join(', ') + '. Retorne APENAS JSON: {"replacements":[{"name":"Nome","desc":"1. Como fazer: [dica]. 2. Erro comum: [erro]","carga":"Carga"}]}', 500);
       const parsed = JSON.parse(txt);
       
       document.getElementById('m-ex-body').textContent = 'Alternativas para "' + ex.name + '":';
       
-      // Construção Segura do DOM:
       document.getElementById('m-ex-list').innerHTML = parsed.replacements.map((r, ri) => {
-        // Separa a aspa para evitar quebra no HTML e na Minificação
         const safeName = r.name.split("'").join("\\'");
         const safeCarga = r.carga.split("'").join("\\'");
         const safeMuscle = ex.muscle.split("'").join("\\'");
+        const safeDesc = r.desc.split("'").join("\\'");
         return `
           <div class="repl-card">
             <div class="repl-name">${r.name}</div>
             <div class="repl-desc">${r.desc}</div>
-            <button class="use-btn" onclick="replaceEx('${dayId}',${exIdx},'${safeName}','${safeMuscle}','${safeCarga}')">Usar este</button>
+            <button class="use-btn" onclick="replaceEx('${dayId}',${exIdx},'${safeName}','${safeMuscle}','${safeCarga}','${safeDesc}')">Usar este</button>
           </div>`;
       }).join('');
       
@@ -1516,9 +1515,9 @@ async function feedbackEx(dayId, exIdx, liked) {
   await buscarAlternativas();
 }
 
-function replaceEx(dayId,exIdx,name,muscle,carga) {
+function replaceEx(dayId,exIdx,name,muscle,carga,tip) {
   const day=S.workout.days.find(d=>d.id===dayId);
-  day.exercises[exIdx]={...day.exercises[exIdx],name,muscle,carga,tip:''};
+  day.exercises[exIdx]={...day.exercises[exIdx],name,muscle,carga,tip:tip||''};
   save();
   document.getElementById('day-'+dayId).innerHTML=buildDayHTML(day);
   initAllSets(); closeM('m-ex');
