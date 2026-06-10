@@ -1682,22 +1682,29 @@ async function logFood(){
   st.innerHTML = '<div class="ai-load"><div class="mini-spin"></div> Calculando calorias...</div>';
   
   try{
-    const prompt = `Atue como um nutricionista. Estime as calorias exatas da seguinte refeição: "${txt}". REGRAS: 1. Se o usuário não informar o peso/quantidade, assuma uma porção padrão moderada para 1 pessoa (ex: 300g no total). 2. Seja realista, não exagere nas calorias se for uma refeição caseira. Responda EXCLUSIVAMENTE em JSON: {"cal": NUMERO_INTEIRO, "desc": "Nome resumido da refeição"}`;
+    // O novo prompt força a IA a calcular proporções reais e proíbe invenções
+    const prompt = `Atue como um banco de dados nutricional (TACO/USDA). Calcule as calorias exatas para: "${txt}".
+    REGRAS MATEMÁTICAS INQUEBRÁVEIS:
+    1. A comida caseira normal tem em média 1.0 a 2.5 kcal por grama. É fisicamente impossível 50g de comida normal passar de 100kcal.
+    2. Se o usuário INFORMAR O PESO (ex: 50g, 150g), aplique a regra de três EXATA! (Ex: 100g de escondidinho de carne tem ~130kcal. Logo, 50g TEM QUE TER ~65kcal).
+    3. Se NENHUM peso for informado, assuma uma porção média de 300g (aprox. 350 a 450 kcal).
+    Responda EXCLUSIVAMENTE com JSON puro: {"cal": NUMERO_INTEIRO, "desc": "Nome resumido"}`;
     
     const res=await groq(prompt, 150);
     const p=JSON.parse(res);
     
-    // Força a caloria a ser um NÚMERO PURO para não bugar a soma da tela inicial
-    const caloriasPuras = parseInt(p.cal) || 450; 
+    const caloriasPuras = parseInt(p.cal) || 350; 
     
     S.food.push({id:Date.now().toString(),desc:p.desc||txt,cal:caloriasPuras,date:new Date().toDateString()});
     document.getElementById('food-txt').value='';
     save(); renderFood(); updateDashboard();
-    showToast("🍽️ Refeição registrada com sucesso!");
+    showToast("🍽️ Refeição registrada com precisão!");
   }catch(e){
-    S.food.push({id:Date.now().toString(),desc:txt,cal:450,date:new Date().toDateString()});
+    // Fallback caso a IA não retorne JSON
+    S.food.push({id:Date.now().toString(),desc:txt,cal:350,date:new Date().toDateString()});
     document.getElementById('food-txt').value='';
     save(); renderFood(); updateDashboard();
+    showToast("⚠️ IA falhou. Valor médio padrão inserido.");
   }
   
   btn.disabled = false;
