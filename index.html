@@ -1376,7 +1376,7 @@ function buildDayHTML(day) {
   const c=day.cardio || {title: 'Polichinelo', minutes: 10, note: 'Ritmo moderado'};
   const ico=cardioIcos[c.title]||'🏃';
   const mins=c.minutes||parseInt(c.duration)||15;
-  const cardioOpts=['Esteira','Corda de pular','Polichinelo','Elíptico','Caminhada','Natação','Outro'].map(o=>`<option value="${o}" ${o===c.title?'selected':''}>${o}</option>`).join('');
+  const cardioOpts=['Esteira','Bike ergométrica','Corda de pular','Polichinelo','Elíptico','Caminhada','Natação','Outro'].map(o=>`<option value="${o}" ${o===c.title?'selected':''}>${o}</option>`).join('');
   let html=`
     <div style="margin-bottom:14px">
       <div class="sec-lbl">Aquecimento <span class="badge bo">cardio</span></div>
@@ -1444,7 +1444,8 @@ function updateCardio(dayId) {
 
 function adjMins(dayId, delta) {
   const day=S.workout.days.find(d=>d.id===dayId); if(!day) return;
-  const cur=day.cardio.minutes||15;
+  // Força a conversão para número limpo, ignorando letras
+  const cur=parseInt(day.cardio.minutes)||15; 
   const novo=Math.max(5, Math.min(60, cur+delta));
   day.cardio.minutes=novo;
   document.getElementById('tval-'+dayId).textContent=novo+' min';
@@ -1460,8 +1461,10 @@ function toggleTimer(dayId) {
     btn.textContent='Iniciar'; btn.classList.remove('running'); return;
   }
   const day=S.workout.days.find(d=>d.id===dayId);
-  const mins=day?day.cardio.minutes||15:15;
+  // Garante que o tempo sempre será um número puro para não bugar o relógio
+  const mins=day?parseInt(day.cardio.minutes)||15:15;
   let s=mins*60;
+  
   btn.classList.add('running'); btn.textContent=fmt(s);
   timerIv[dayId]=setInterval(()=>{
     s--;
