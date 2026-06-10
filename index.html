@@ -12,6 +12,7 @@
 <title>Compasso</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap');
 :root{
@@ -514,14 +515,14 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
         <div class="u-nm" id="hdr-nm">Usuário</div>
       </div>
     </div>
-    <div class="nav-tabs">
-      <button class="nav-tab active" onclick="showTab('inicio',this)">🏠 Início</button>
-      <button class="nav-tab" onclick="showTab('treino',this)">💪 Treino</button>
-      <button class="nav-tab" onclick="showTab('tarefas',this)">📋 Tasks</button>
-      <button class="nav-tab" onclick="showTab('refeicoes',this)">🍽️ Refeições</button>
-      <button class="nav-tab" onclick="showTab('peso',this)">⚖️ Peso</button>
-      <button class="nav-tab" onclick="showTab('geladeira',this)">🧊 Geladeira</button>
-      <button class="nav-tab" onclick="showTab('perfil',this)">👤 Perfil</button>
+  <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('inicio',this)" style="display:inline-flex; align-items:center; gap:4px"><i class="ph ph-house text-[16px]"></i> Início</button>
+      <button class="nav-tab" onclick="showTab('treino',this)" style="display:inline-flex; align-items:center; gap:4px"><i class="ph ph-barbell text-[16px]"></i> Treino</button>
+      <button class="nav-tab" onclick="showTab('tarefas',this)" style="display:inline-flex; align-items:center; gap:4px"><i class="ph ph-check-square text-[16px]"></i> Tasks</button>
+      <button class="nav-tab" onclick="showTab('refeicoes',this)" style="display:inline-flex; align-items:center; gap:4px"><i class="ph ph-fork-knife text-[16px]"></i> Refeições</button>
+      <button class="nav-tab" onclick="showTab('peso',this)" style="display:inline-flex; align-items:center; gap:4px"><i class="ph ph-scales text-[16px]"></i> Peso</button>
+      <button class="nav-tab" onclick="showTab('geladeira',this)" style="display:inline-flex; align-items:center; gap:4px"><i class="ph ph-snowflake text-[16px]"></i> Geladeira</button>
+      <button class="nav-tab" onclick="showTab('perfil',this)" style="display:inline-flex; align-items:center; gap:4px"><i class="ph ph-user text-[16px]"></i> Perfil</button>
     </div>
   </header>
   <div class="content">
