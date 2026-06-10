@@ -1682,9 +1682,15 @@ async function logFood(){
   st.innerHTML = '<div class="ai-load"><div class="mini-spin"></div> Calculando calorias...</div>';
   
   try{
-    const res=await groq('Estime as calorias totais para toda a refeição descrita de forma única e consolidada. Forneça um único valor total que represente o prato inteiro. Refeição: "'+txt+'". Responda APENAS JSON: {"cal":NUMERO,"desc":"Nome resumido do prato inteiro"}',150);
+    const prompt = `Atue como um nutricionista. Estime as calorias exatas da seguinte refeição: "${txt}". REGRAS: 1. Se o usuário não informar o peso/quantidade, assuma uma porção padrão moderada para 1 pessoa (ex: 300g no total). 2. Seja realista, não exagere nas calorias se for uma refeição caseira. Responda EXCLUSIVAMENTE em JSON: {"cal": NUMERO_INTEIRO, "desc": "Nome resumido da refeição"}`;
+    
+    const res=await groq(prompt, 150);
     const p=JSON.parse(res);
-    S.food.push({id:Date.now().toString(),desc:p.desc||txt,cal:p.cal||450,date:new Date().toDateString()});
+    
+    // Força a caloria a ser um NÚMERO PURO para não bugar a soma da tela inicial
+    const caloriasPuras = parseInt(p.cal) || 450; 
+    
+    S.food.push({id:Date.now().toString(),desc:p.desc||txt,cal:caloriasPuras,date:new Date().toDateString()});
     document.getElementById('food-txt').value='';
     save(); renderFood(); updateDashboard();
     showToast("🍽️ Refeição registrada com sucesso!");
