@@ -23,10 +23,23 @@
   --blue:#3b82f6;--bdim:rgba(59,130,246,0.15);
   --red:#ef4444;--rdim:rgba(239,68,68,0.15);
 }
+
+/* ── PROFUNDIDADE E ILUMINAÇÃO (Fim do visual chapado) ── */
+body {
+  background: radial-gradient(circle at top, #181821 0%, var(--bg) 100%) !important;
+  background-attachment: fixed !important;
+}
+
+.card, .repl-card, .food-item, .task-item {
+  background: linear-gradient(145deg, rgba(39, 39, 42, 0.6), rgba(24, 24, 27, 0.4)) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5) !important;
+}
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;min-height:100vh;padding-bottom:90px}
 input,button,textarea,select{font-family:'DM Sans',sans-serif}
-
 #ob{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;overflow-y:auto}
 .ob-step{display:none;flex:1;flex-direction:column;padding:40px 24px 32px;animation:fu .3s ease}
 .ob-step.active{display:flex}
@@ -411,7 +424,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   <!-- Passo 0: Acolhimento -->
   <div class="ob-step active" id="obs-0">
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px">
-      <div style="font-size:60px">🧭</div>
+      <div style="font-size:60px; color:var(--accent)"><i class="ph ph-compass-tool"></i></div>
       <div class="ob-logo">Compasso.</div>
       <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.2">Seu assistente<br>de vida diário</div>
       <div style="font-size:13px;color:var(--muted2);line-height:1.7;max-width:280px">Treino por IA, nutrição, peso e rotina unificados com alta performance.</div>
@@ -541,7 +554,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
 <div id="app">
   <header>
     <div class="hdr-top">
-      <div class="app-logo">🧭 Compasso.</div>
+      <div class="app-logo"><i class="ph-fill ph-compass-tool"></i> Compasso.</div>
       <div class="user-pill">
         <div class="u-av" id="hdr-av">?</div>
         <div class="u-nm" id="hdr-nm">Usuário</div>
@@ -572,29 +585,29 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
       <!-- GRID PRINCIPAL -->
       <div class="grid grid-cols-3 gap-3 mb-3">
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne text-[#C8FF57]" id="dash-weight-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-weight-val" style="font-family:'Syne'">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Peso (kg)</div>
         </div>
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne text-[#C8FF57]" id="dash-height-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-height-val" style="font-family:'Syne'">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Altura (cm)</div>
         </div>
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne text-[#C8FF57]" id="dash-imc-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-imc-val" style="font-family:'Syne'">--</div>
           <div class="text-[10px] text-gray-500 mt-1">IMC</div>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-3 mb-4">
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne text-[#C8FF57]" id="dash-workouts-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-workouts-val" style="font-family:'Syne'">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Treinos</div>
         </div>
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne text-[#C8FF57]" id="dash-kcal-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-kcal-val" style="font-family:'Syne'">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Meta kcal</div>
         </div>
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne text-[#C8FF57]" id="dash-freq-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-freq-val" style="font-family:'Syne'">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Dias/sem</div>
         </div>
       </div>
@@ -606,7 +619,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
         <div class="card mb-0">
           <div class="flex justify-between items-center text-xs">
             <span class="font-bold text-gray-300">🍎 Dieta / Alimentação</span>
-            <span class="text-[#C8FF57] font-semibold" id="dash-progress-dieta-lbl">0 / -- Kcal</span>
+            <span class="style="color: var(--accent)" font-semibold" id="dash-progress-dieta-lbl">0 / -- Kcal</span>
           </div>
           <div class="prog-wrap">
             <div class="prog-fill" id="dash-progress-dieta-bar" style="width:0%"></div>
@@ -616,7 +629,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
         <div class="card mb-0">
           <div class="flex justify-between items-center text-xs">
             <span class="font-bold text-gray-300">💪 Treino do Dia</span>
-            <span class="text-[#C8FF57] font-semibold" id="dash-progress-treino-lbl">0 / 0 Séries</span>
+            <span class="style="color: var(--accent)" font-semibold" id="dash-progress-treino-lbl">0 / 0 Séries</span>
           </div>
           <div class="prog-wrap">
             <div class="prog-fill" id="dash-progress-treino-bar" style="width:0%"></div>
@@ -626,7 +639,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
         <div class="card mb-0">
           <div class="flex justify-between items-center text-xs">
             <span class="font-bold text-gray-300">📋 Rotina de Tarefas</span>
-            <span class="text-[#C8FF57] font-semibold" id="dash-progress-tarefas-lbl">0% Concluído</span>
+            <span class="style="color: var(--accent)" font-semibold" id="dash-progress-tarefas-lbl">0% Concluído</span>
           </div>
           <div class="prog-wrap">
             <div class="prog-fill" id="dash-progress-tarefas-bar" style="width:0%"></div>
@@ -717,7 +730,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
 <button class="finish-btn" id="finish-btn" onclick="finishWorkout()">✓ Concluir treino</button>
 
 <div class="pwa-banner" id="pwa-banner">
-  <div class="pwa-ico">🧭</div>
+  <div class="pwa-ico"><i class="ph ph-compass-tool"></i></div>
   <div class="pwa-info">
     <div class="pwa-title">Instalar Compasso</div>
     <div class="pwa-sub" id="pwa-sub">Adicione à tela inicial</div>
