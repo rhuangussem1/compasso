@@ -243,7 +243,39 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
     transform: scale(0.94) !important; /* Botão dá uma leve "afundada" */
     opacity: 0.8;
   }
-
+ 
+/* ── HIERARQUIA DE FONTES (Ajuste de Leitura) ── */
+  /* Títulos de seção mais elegantes e espaçados */
+  .sec-lbl {
+    font-size: 11px !important;
+    letter-spacing: 0.15em !important;
+    color: var(--muted) !important;
+    font-weight: 700 !important;
+    margin-bottom: 12px !important;
+  }
+  
+  /* Nomes dos exercícios, pratos e tarefas com mais destaque */
+  .ex-name, .prato-nome, .food-name, .t-text {
+    font-size: 16px !important; 
+    letter-spacing: -0.02em !important;
+    color: var(--text) !important;
+    font-weight: 800 !important;
+  }
+  
+  /* Textos secundários (músculo, dicas, preparo) mais suaves */
+  .ex-muscle, .prato-sec, .food-hint, .t-time {
+    font-size: 12px !important;
+    color: var(--muted) !important;
+    font-weight: 400 !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* Destaque numérico para dar peso aos resultados */
+  .cal-num, .w-val, .food-cal, .prato-meta {
+    font-family: 'Syne', sans-serif !important;
+    letter-spacing: -0.03em !important;
+  }
+ 
   /* Efeito "Glass" (vidro translúcido) na barra de navegação inferior */
   #nav {
     background: rgba(24, 24, 27, 0.75) !important;
