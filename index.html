@@ -1138,7 +1138,7 @@ async function startGen() {
   try {
     const equipStr = obP.local === 'academia' ? 'Academia Padrão de Musculação' : (obP.equipment || []).join(', ');
     const prompt=`Crie um treino estruturado para: Nome: ${obP.name}, Sexo: ${obP.sexo}, Idade: ${obP.age}, Altura: ${obP.height}cm, Peso: ${obP.weight}kg, Objetivo: ${goalLbl(obP.goal)}, Biotipo: ${obP.biotipo}, Local de Treino: ${obP.local}, Equipamentos: ${equipStr}. Obs: ${obP.suggest}. Dias/sem: ${obP.days}. REGRA OBRIGATÓRIA: 5 a 7 exercícios por dia. O campo 'tip' DEVE ter este exato formato: "1. Como fazer: [dica de execução]. 2. Erro comum: [o que NÃO fazer]". Retorne EXCLUSIVAMENTE um JSON sem markdown: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":15,"note":"Ritmo leve"},"focus":"Foco do treino","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10-12","tip":"1. Como fazer: ... 2. Erro comum: ..."}]}]}.`;
-    const txt = await groq(prompt, 2000);
+    const txt = await groq(prompt, 4000);
     const parsed = JSON.parse(txt);
     workout = sanitizeWorkout(parsed);
     if (!workout) {
@@ -1330,7 +1330,7 @@ async function saveProfileEdits() {
   try {
     const equipStr = p.local === 'academia' ? 'Academia Padrão de Musculação' : (p.equipment || []).join(', ');
     const prompt = `Crie uma série de musculação adaptada para: Sexo: ${p.sexo}, Idade: ${p.age}, Altura: ${p.height}cm, Peso: ${p.weight}kg, Objetivo: ${goalLbl(p.goal)}, Biotipo: ${p.biotipo}, Local de Treino: ${p.local}, Equipamentos: ${equipStr}. Obs: ${p.suggest}. Dias/sem: ${p.days}. REGRA OBRIGATÓRIA: 5 a 7 exercícios por dia. O campo 'tip' DEVE ter este exato formato: "1. Como fazer: [dica de execução]. 2. Erro comum: [o que NÃO fazer]". Retorne APENAS o JSON plano sem markdown ou tags: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":10,"note":"Leve"},"focus":"Foco","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10","tip":"1. Como fazer: ... 2. Erro comum: ..."}]}]}`;
-    const txt = await groq(prompt, 2000);
+    const txt = await groq(prompt, 4000);
     const parsed = JSON.parse(txt);
     S.workout = sanitizeWorkout(parsed);
     if (!S.workout) {
