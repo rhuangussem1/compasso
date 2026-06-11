@@ -1682,15 +1682,16 @@ async function logFood(){
   st.innerHTML = '<div class="ai-load"><div class="mini-spin"></div> Calculando calorias...</div>';
   
   try{
-    const prompt = `Atue como um banco de dados nutricional (TACO/USDA). Calcule as calorias exatas para: "${txt}".
-    REGRAS MATEMÁTICAS INQUEBRÁVEIS:
-    1. A comida caseira normal tem em média 1.0 a 2.5 kcal por grama.
-    2. Se o usuário INFORMAR O PESO (ex: 50g, 150g), aplique a regra de três EXATA!
-    3. Bebidas puras como café preto sem açúcar, chá ou água têm 0 calorias.
-    4. Se NENHUM peso for informado (e não for bebida), assuma uma porção média de 300g.
-    Responda EXCLUSIVAMENTE com JSON puro: {"cal": NUMERO_INTEIRO, "desc": "Nome resumido"}`;
+  // Novo Prompt: Obriga a IA a pensar matematicamente antes de responder
+    const prompt = `Atue como um nutricionista calculista (TACO/USDA). Avalie: "${txt}".
+    REGRAS INQUEBRÁVEIS:
+    1. Comida limpa caseira (batata, arroz, carne, milho) tem densidade média de 1.0 a 1.6 kcal/g.
+    2. Se o peso for informado (ex: 300g), MULTIPLIQUE pela densidade! Ex: 300g de batata e carne limpa = 300 * 1.3 = ~390 kcal. NUNCA dê 1000+ kcal para comida limpa.
+    3. Água e café preto = 0 kcal.
+    Responda EXCLUSIVAMENTE em JSON contendo seu raciocínio e o valor final:
+    {"raciocinio": "300g de carne e batata. Densidade ~1.4. 300*1.4 = 420", "cal": 420, "desc": "Escondidinho batata/carne"}`;
     
-    const res=await groq(prompt, 150);
+    const res=await groq(prompt, 200);
     const p=JSON.parse(res);
     
     // CORREÇÃO: Agora o código aceita o ZERO como valor válido, em vez de pular pro 350!
