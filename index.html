@@ -1682,25 +1682,26 @@ async function logFood(){
   st.innerHTML = '<div class="ai-load"><div class="mini-spin"></div> Calculando calorias...</div>';
   
   try{
-    // O novo prompt força a IA a calcular proporções reais e proíbe invenções
     const prompt = `Atue como um banco de dados nutricional (TACO/USDA). Calcule as calorias exatas para: "${txt}".
     REGRAS MATEMÁTICAS INQUEBRÁVEIS:
-    1. A comida caseira normal tem em média 1.0 a 2.5 kcal por grama. É fisicamente impossível 50g de comida normal passar de 100kcal.
-    2. Se o usuário INFORMAR O PESO (ex: 50g, 150g), aplique a regra de três EXATA! (Ex: 100g de escondidinho de carne tem ~130kcal. Logo, 50g TEM QUE TER ~65kcal).
-    3. Se NENHUM peso for informado, assuma uma porção média de 300g (aprox. 350 a 450 kcal).
+    1. A comida caseira normal tem em média 1.0 a 2.5 kcal por grama.
+    2. Se o usuário INFORMAR O PESO (ex: 50g, 150g), aplique a regra de três EXATA!
+    3. Bebidas puras como café preto sem açúcar, chá ou água têm 0 calorias.
+    4. Se NENHUM peso for informado (e não for bebida), assuma uma porção média de 300g.
     Responda EXCLUSIVAMENTE com JSON puro: {"cal": NUMERO_INTEIRO, "desc": "Nome resumido"}`;
     
     const res=await groq(prompt, 150);
     const p=JSON.parse(res);
     
-    const caloriasPuras = parseInt(p.cal) || 350; 
+    // CORREÇÃO: Agora o código aceita o ZERO como valor válido, em vez de pular pro 350!
+    const parsedCal = parseInt(p.cal);
+    const caloriasPuras = isNaN(parsedCal) ? 350 : parsedCal; 
     
     S.food.push({id:Date.now().toString(),desc:p.desc||txt,cal:caloriasPuras,date:new Date().toDateString()});
     document.getElementById('food-txt').value='';
     save(); renderFood(); updateDashboard();
     showToast("🍽️ Refeição registrada com precisão!");
   }catch(e){
-    // Fallback caso a IA não retorne JSON
     S.food.push({id:Date.now().toString(),desc:txt,cal:350,date:new Date().toDateString()});
     document.getElementById('food-txt').value='';
     save(); renderFood(); updateDashboard();
