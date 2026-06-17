@@ -43,11 +43,19 @@
  
 /* ── MODO DESKTOP (Centraliza como um celular na tela do PC) ── */
 @media (min-width: 600px) {
-  body { display: flex; justify-content: center; background: #050505 !important; }
-  #app, #ob, #gen { width: 100%; max-width: 420px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
-  header { max-width: 420px; margin: 0 auto; left: 0; right: 0; }
-  .finish-btn { max-width: 350px; }
-  .pwa-banner { max-width: 420px; margin: 0 auto; left: 0; right: 0; }
+  body { background: #050505 !important; }
+  #app, #ob, #gen { 
+    width: 100% !important; 
+    max-width: 420px !important; 
+    margin: 0 auto !important; 
+    left: 0 !important; 
+    right: 0 !important; 
+    border-left: 1px solid var(--border) !important; 
+    border-right: 1px solid var(--border) !important; 
+  }
+  header { max-width: 420px !important; margin: 0 auto !important; left: 0 !important; right: 0 !important; }
+  .finish-btn { max-width: 350px !important; left: 50% !important; transform: translateX(-50%) !important; }
+  .pwa-banner { max-width: 420px !important; margin: 0 auto !important; left: 0 !important; right: 0 !important; }
 }
  
 /* ── PROFUNDIDADE E ILUMINAÇÃO (Fim do visual chapado) ── */
@@ -1531,32 +1539,6 @@ function renderSets(dayId,exIdx,numSets,repsStr) {
   }
   const card=document.getElementById('card-'+dayId+'-'+exIdx);
   if(card) card.classList.toggle('done',S.sets[k].filter(Boolean).length===numSets);
-}
-
-// LÓGICA DO TIMER DE DESCANSO
-let restIv = null;
-function startRest(secs = 60) {
-  clearInterval(restIv);
-  const rt = document.getElementById('rest-timer');
-  const rs = document.getElementById('rest-sec');
-  rt.style.display = 'flex';
-  let s = secs;
-  rs.textContent = s + 's';
-  restIv = setInterval(() => {
-    s--;
-    if (s <= 0) {
-      clearInterval(restIv);
-      rt.style.display = 'none';
-      showToast("⏰ Fim do descanso! Bora pra próxima série!");
-      if("vibrate" in navigator) navigator.vibrate([200, 100, 200]); // Faz o celular vibrar
-    } else {
-      rs.textContent = s + 's';
-    }
-  }, 1000);
-}
-function stopRest() {
-  clearInterval(restIv);
-  document.getElementById('rest-timer').style.display = 'none';
 }
 
 // LÓGICA DO TIMER DE DESCANSO
