@@ -870,7 +870,7 @@ const cardioIcos = {
   'Outro': '🏋️'
 };
 
-// ── GROQ API COMPILATION (AGORA BLINDADO PARA JSON) ──
+// ── GROQ API COMPILATION (MODO DIAGNÓSTICO) ──
 const GROQ_MODEL = 'llama-3.3-70b-versatile'; 
 async function groq(prompt, maxTokens = 4000) {
   const controller = new AbortController();
@@ -882,14 +882,30 @@ async function groq(prompt, maxTokens = 4000) {
       body: JSON.stringify({ 
         model: GROQ_MODEL, 
         max_tokens: maxTokens, 
-        response_format: { type: "json_object" }, // FORÇA A IA A DEVOLVER JSON PURO
         messages: [{ role: 'user', content: prompt }] 
       }),
       signal: controller.signal
     });
     clearTimeout(timeoutId);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
+    
+    // 1. LÊ O TEXTO BRUTO PARA DESCOBRIR O QUE O SERVIDOR ESTÁ FALANDO
+    const rawText = await res.text();
+    
+    let data;
+    try {
+      // Tenta converter para JSON
+      data = JSON.parse(rawText);
+    } catch(e) {
+      // Se falhar, é porque o Vercel devolveu erro HTML (Ex: 504 Timeout ou 500 Error)
+      alert("🚨 ERRO DO SERVIDOR VERCEL:\n" + rawText.substring(0, 150));
+      throw new Error("Erro no servidor Vercel.");
+    }
+
+    // 2. VERIFICA SE A GROQ MANDOU MENSAGEM DE ERRO (Ex: Rate Limit ou Chave Inválida)
+    if (data.error) {
+      alert("🚨 ERRO DA IA GROQ:\n" + data.error.message);
+      throw new Error(data.error.message);
+    }
     
     let txt = data.choices[0].message.content.trim();
     txt = txt.replace(/```json/gi, '').replace(/```/g, '').trim();
@@ -902,7 +918,10 @@ async function groq(prompt, maxTokens = 4000) {
     return txt;
   } catch (e) {
     clearTimeout(timeoutId);
-    throw new Error(e.name === 'AbortError' ? 'Tempo de resposta excedido' : e.message);
+    if(!e.message.includes("Vercel") && !e.message.includes("GROQ")) {
+       alert("🚨 ERRO DE CONEXÃO LOCAL:\n" + e.message);
+    }
+    throw e;
   }
 }
 
