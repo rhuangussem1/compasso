@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
- <head>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0a0a0d">
@@ -44,6 +44,7 @@
 /* ── MODO DESKTOP (Centraliza como um celular na tela do PC) ── */
 @media (min-width: 600px) {
   body { background: #050505 !important; }
+  
   #app, #ob, #gen { 
     width: 100% !important; 
     max-width: 420px !important; 
@@ -52,10 +53,12 @@
     right: 0 !important; 
     border-left: 1px solid var(--border) !important; 
     border-right: 1px solid var(--border) !important; 
-   nav { overflow-x: auto !important; }
-  nav::-webkit-scrollbar { display: block !important; height: 6px; }
-  nav::-webkit-scrollbar-thumb { background: var(--s2); border-radius: 10px; }
   }
+  
+  .nav-tabs { overflow-x: auto !important; }
+  .nav-tabs::-webkit-scrollbar { display: block !important; height: 6px; }
+  .nav-tabs::-webkit-scrollbar-thumb { background: var(--s2); border-radius: 10px; }
+  
   header { max-width: 420px !important; margin: 0 auto !important; left: 0 !important; right: 0 !important; }
   .finish-btn { max-width: 350px !important; left: 50% !important; transform: translateX(-50%) !important; }
   .pwa-banner { max-width: 420px !important; margin: 0 auto !important; left: 0 !important; right: 0 !important; }
@@ -257,8 +260,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
 .pwa-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:3px;flex-shrink:0}
 .empty{text-align:center;color:var(--muted);font-size:12px;padding:24px 0;line-height:1.8}
 </style>
-    <!-- ── UI POLISH PATCH (BANHO DE LOJA) ── -->
-<style>
+    <style>
   :root {
     --bg: #09090b; /* Fundo sutilmente mais escuro e sofisticado */
     --surface: #18181b; 
@@ -341,13 +343,11 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
 
 <div id="toast-container"></div>
 
-<!-- TIMER DE DESCANSO FLUTUANTE -->
 <div id="rest-timer" style="display:none; position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--surface); border:1px solid var(--border); color:var(--text); padding:10px 20px; border-radius:30px; z-index:100; font-weight:bold; box-shadow:0 8px 30px rgba(0,0,0,0.6); align-items:center; gap:12px;">
   ⏳ Descanso: <span id="rest-sec" style="color:var(--accent); font-family:'Syne', sans-serif; font-size:16px;">60s</span>
   <button onclick="stopRest()" style="background:var(--s2);border:1px solid var(--border);color:var(--muted);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px">×</button>
 </div>
 
-<!-- MODAL TERMOS DE USO -->
 <div class="modal-ov" id="m-terms">
   <div class="modal">
     <h3 style="color:var(--accent)">Termos de Responsabilidade</h3>
@@ -359,7 +359,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   </div>
 </div>
 
-<!-- MODAL CONFIRMAÇÃO CUSTOMIZADO -->
 <div class="modal-ov" id="m-confirm">
   <div class="modal">
     <h3 id="confirm-title" style="color:var(--accent)">Atenção</h3>
@@ -371,7 +370,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   </div>
 </div>
 
-<!-- MODAL TESTE DE PULSO -->
 <div class="modal-ov" id="m-wrist-test">
   <div class="modal">
     <h3 style="color:var(--accent)">🔍 Como saber meu Biotipo?</h3>
@@ -393,7 +391,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   </div>
 </div>
 
-<!-- MODAL EDITAR MEDIDAS / REGERAR TREINO -->
 <div class="modal-ov" id="m-edit-profile">
   <div class="modal">
     <h3 style="color:var(--accent)">✏️ Editar Perfil & Treino</h3>
@@ -450,7 +447,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   </div>
 </div>
 
-<!-- MODAL SUBSTITUIR EXERCÍCIO -->
 <div class="modal-ov" id="m-ex">
   <div class="modal">
     <h3 id="m-ex-title" style="color:var(--accent)">Substituir exercício</h3>
@@ -462,9 +458,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   </div>
 </div>
 
-<!-- ONBOARDING FLOW -->
 <div id="ob">
-  <!-- Passo 0: Acolhimento -->
   <div class="ob-step active" id="obs-0">
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px">
       <div style="font-size:60px; color:var(--accent)"><i class="ph ph-compass-tool"></i></div>
@@ -475,7 +469,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
     <button class="ob-btn" id="google-login-btn" style="background:#1e1e24; color:#fff; border:1px solid var(--border)">Entrar com Google 🌐</button>
   </div>
 
-  <!-- Passo 1: Informações Cadastrais (AGORA COM TERMOS DE USO) -->
   <div class="ob-step" id="obs-1">
     <div class="ob-dots" id="dots-1"></div>
     <div class="ob-title">Como te chamamos?</div>
@@ -491,7 +484,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
     <button class="ob-btn" id="btn1" onclick="goStep(2)" disabled>Continuar →</button>
   </div>
 
-  <!-- Passo 2: Dados Antropométricos -->
   <div class="ob-step" id="obs-2">
     <button class="ob-back" onclick="goStep(1)">← Voltar</button>
     <div class="ob-dots" id="dots-2"></div>
@@ -509,7 +501,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
     <button class="ob-btn" onclick="validateStep2()">Continuar →</button>
   </div>
 
-  <!-- Passo 3: Objetivo Principal -->
   <div class="ob-step" id="obs-3">
     <button class="ob-back" onclick="goStep(2)">← Voltar</button>
     <div class="ob-dots" id="dots-3"></div>
@@ -524,7 +515,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
     <button class="ob-btn" id="btn3" onclick="goStep(4)" disabled>Continuar →</button>
   </div>
 
-  <!-- Passo 4: Biotipo Corporal -->
   <div class="ob-step" id="obs-4">
     <button class="ob-back" onclick="goStep(3)">← Voltar</button>
     <div class="ob-dots" id="dots-4"></div>
@@ -541,7 +531,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
     <button class="ob-btn" id="btn4" onclick="goStep(5)" disabled>Continuar →</button>
   </div>
 
-  <!-- Passo 5: Local de Treino e Observações -->
   <div class="ob-step" id="obs-5">
     <button class="ob-back" onclick="goStep(4)">← Voltar</button>
     <div class="ob-dots" id="dots-5"></div>
@@ -570,7 +559,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
     <button class="ob-btn" id="btn5" onclick="goStep(6)" disabled>Continuar →</button>
   </div>
 
-  <!-- Passo 6: Frequência Semanal -->
   <div class="ob-step" id="obs-6">
     <button class="ob-back" onclick="goStep(5)">← Voltar</button>
     <div class="ob-dots" id="dots-6"></div>
@@ -586,14 +574,12 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   </div>
 </div>
 
-<!-- GENERATING -->
 <div id="gen">
   <div class="spinner"></div>
   <div class="gen-title">Desenhando seus treinos...</div>
   <div id="gen-msg" style="font-size:12px;color:var(--muted2)">Estruturando o plano com a inteligência artificial</div>
 </div>
 
-<!-- MAIN APPLICATION -->
 <div id="app">
   <header>
     <div class="hdr-top">
@@ -615,7 +601,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   </header>
   <div class="content">
 
-    <!-- TELA INÍCIO (DASHBOARD) -->
     <div id="tab-inicio" class="tab-panel active">
       <div class="flex items-center justify-between mb-4">
         <div>
@@ -625,64 +610,59 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
         <div class="badge bg" id="dash-physical-badge" style="font-size:11px; padding:6px 12px">Calculando...</div>
       </div>
 
-      <!-- GRID PRINCIPAL -->
       <div class="grid grid-cols-3 gap-3 mb-3">
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-weight-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold" style="color:var(--accent); font-family:'Syne'" id="dash-weight-val">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Peso (kg)</div>
         </div>
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-height-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold" style="color:var(--accent); font-family:'Syne'" id="dash-height-val">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Altura (cm)</div>
         </div>
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-imc-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold" style="color:var(--accent); font-family:'Syne'" id="dash-imc-val">--</div>
           <div class="text-[10px] text-gray-500 mt-1">IMC</div>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-3 mb-4">
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-workouts-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold" style="color:var(--accent); font-family:'Syne'" id="dash-workouts-val">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Treinos</div>
         </div>
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-kcal-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold" style="color:var(--accent); font-family:'Syne'" id="dash-kcal-val">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Meta kcal</div>
         </div>
         <div class="card text-center mb-0" style="padding:10px 4px">
-          <div class="text-xl font-bold font-syne style="color: var(--accent)"" id="dash-freq-val" style="font-family:'Syne'">--</div>
+          <div class="text-xl font-bold" style="color:var(--accent); font-family:'Syne'" id="dash-freq-val">--</div>
           <div class="text-[10px] text-gray-500 mt-1">Dias/sem</div>
         </div>
       </div>
 
-      <!-- PROGRESSO DO DIA -->
       <span class="sec-lbl">Sua Progressão de Hoje</span>
       <div class="flex flex-col gap-3">
-        <!-- Dieta -->
         <div class="card mb-0">
           <div class="flex justify-between items-center text-xs">
             <span class="font-bold text-gray-300">🍎 Dieta / Alimentação</span>
-            <span class="style="color: var(--accent)" font-semibold" id="dash-progress-dieta-lbl">0 / -- Kcal</span>
+            <span style="color:var(--accent); font-weight:600" id="dash-progress-dieta-lbl">0 / -- Kcal</span>
           </div>
           <div class="prog-wrap">
             <div class="prog-fill" id="dash-progress-dieta-bar" style="width:0%"></div>
           </div>
         </div>
-        <!-- Treino -->
         <div class="card mb-0">
           <div class="flex justify-between items-center text-xs">
             <span class="font-bold text-gray-300">💪 Treino do Dia</span>
-            <span class="style="color: var(--accent)" font-semibold" id="dash-progress-treino-lbl">0 / 0 Séries</span>
+            <span style="color:var(--accent); font-weight:600" id="dash-progress-treino-lbl">0 / 0 Séries</span>
           </div>
           <div class="prog-wrap">
             <div class="prog-fill" id="dash-progress-treino-bar" style="width:0%"></div>
           </div>
         </div>
-        <!-- Rotina -->
         <div class="card mb-0">
           <div class="flex justify-between items-center text-xs">
             <span class="font-bold text-gray-300">📋 Rotina de Tarefas</span>
-            <span class="style="color: var(--accent)" font-semibold" id="dash-progress-tarefas-lbl">0% Concluído</span>
+            <span style="color:var(--accent); font-weight:600" id="dash-progress-tarefas-lbl">0% Concluído</span>
           </div>
           <div class="prog-wrap">
             <div class="prog-fill" id="dash-progress-tarefas-bar" style="width:0%"></div>
@@ -691,13 +671,11 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
       </div>
     </div>
 
-    <!-- TREINO PANEL (CORRIGIDO PARÂMETRO ID) -->
     <div id="tab-treino" class="tab-panel">
       <div class="day-sel" id="day-sel"></div>
       <div id="workout-area"></div>
     </div>
 
-    <!-- TAREFAS PANEL -->
     <div id="tab-tarefas" class="tab-panel">
       <div style="font-size:11px;color:var(--muted);margin-bottom:10px;text-align:right" id="today-lbl"></div>
       <div class="inp-row">
@@ -709,7 +687,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
       <button class="clr-btn" onclick="clearDone()">Limpar concluídas</button>
     </div>
 
-    <!-- REFEIÇÕES PANEL -->
     <div id="tab-refeicoes" class="tab-panel">
       <div class="cal-bar">
         <div>
@@ -731,7 +708,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
       <div id="food-list"></div>
     </div>
 
-    <!-- PESO PANEL -->
     <div id="tab-peso" class="tab-panel">
       <div class="w-inp-row">
         <input type="number" class="w-inp" id="w-inp" placeholder="kg" step="0.1">
@@ -742,7 +718,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
       <div id="w-list"></div>
     </div>
 
-    <!-- GELADEIRA PANEL -->
     <div id="tab-geladeira" class="tab-panel">
       <div class="sec-lbl" style="margin-bottom:8px">Ingredientes em casa <span class="badge bo">geladeira & armário</span></div>
       <div class="inp-row">
@@ -754,7 +729,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
       <div id="meal-result"></div>
     </div>
 
-    <!-- PERFIL PANEL -->
     <div id="tab-perfil" class="tab-panel">
       <div class="prof-hdr">
         <div class="prof-av" id="prof-av">?</div>
@@ -782,7 +756,6 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   <button class="pwa-close" onclick="closePWA()">×</button>
 </div>
 
-<!-- FIREBASE & CORE LOGIC -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
@@ -881,7 +854,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
 </script>
 
 <script>
-// ── CARDIO ICONS & TIMERS DE TREINO (CORREÇÃO CRÍTICA) ──
+// ── CARDIO ICONS & TIMERS DE TREINO ──
 let curDay = null;
 const timerIv = {};
 const timerMins = {};
@@ -897,7 +870,7 @@ const cardioIcos = {
   'Outro': '🏋️'
 };
 
-// ── GROQ API COMPILATION ──
+// ── GROQ API COMPILATION (AGORA BLINDADO PARA JSON) ──
 const GROQ_MODEL = 'llama-3.3-70b-versatile'; 
 async function groq(prompt, maxTokens = 4000) {
   const controller = new AbortController();
@@ -906,7 +879,12 @@ async function groq(prompt, maxTokens = 4000) {
     const res = await fetch('/api/groq', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: GROQ_MODEL, max_tokens: maxTokens, messages: [{ role: 'user', content: prompt }] }),
+      body: JSON.stringify({ 
+        model: GROQ_MODEL, 
+        max_tokens: maxTokens, 
+        response_format: { type: "json_object" }, // FORÇA A IA A DEVOLVER JSON PURO
+        messages: [{ role: 'user', content: prompt }] 
+      }),
       signal: controller.signal
     });
     clearTimeout(timeoutId);
@@ -1069,7 +1047,7 @@ function goStep(n) {
   renderDots();
 }
 
-// ── VALIDAÇÃO DE INPUTS (CAMADA 2) ──
+// ── VALIDAÇÃO DE INPUTS ──
 function validateStep2() {
   const ageStr = document.getElementById('ob-age').value;
   const heightStr = document.getElementById('ob-height').value;
@@ -1188,7 +1166,6 @@ async function startGen() {
       throw new Error("Falha na formatação do treino retornado.");
     }
   } catch(e) { 
-    // PLANO B ATIVADO: Hardcoded fallback se IA falhar
     workout = sanitizeWorkout(defaultWorkout(obP)); 
   }
   clearInterval(iv);
@@ -1226,7 +1203,6 @@ function updateDashboard() {
   const p = S.profile;
   if (!p || !p.name) return;
 
-  // Calculo Automático IMC e Classificação Física
   const w = parseFloat(p.weight) || 70;
   const h = (parseFloat(p.height) || 170) / 100;
   const imc = h > 0 ? (w / (h * h)).toFixed(1) : "0.0";
@@ -1247,7 +1223,6 @@ function updateDashboard() {
     badgeColor = "rdim";
   }
 
-  // Set values to DOM
   document.getElementById('dash-user-name').textContent = p.name;
   document.getElementById('dash-weight-val').textContent = w;
   document.getElementById('dash-height-val').textContent = Math.round(h * 100);
@@ -1260,7 +1235,6 @@ function updateDashboard() {
   physicalBadge.textContent = classification;
   physicalBadge.className = `badge ${badgeColor}`;
 
-  // Atualização das Barras de Progresso diário
   const today = new Date().toDateString();
   const tf = (S.food || []).filter(f=>f.date===today);
   const consumedKcal = tf.reduce((a,f)=>a+(f.cal||0),0);
@@ -1269,7 +1243,6 @@ function updateDashboard() {
   document.getElementById('dash-progress-dieta-lbl').textContent = `${consumedKcal} / ${goalKcal} Kcal`;
   document.getElementById('dash-progress-dieta-bar').style.width = `${kcalPct}%`;
 
-  // Treino progresso
   const dayId = curDay || (S.workout ? S.workout.days[0].id : null);
   if (dayId && S.workout) {
     const day = S.workout.days.find(d=>d.id===dayId);
@@ -1286,7 +1259,6 @@ function updateDashboard() {
     }
   }
 
-  // Tarefas progresso
   const tasks = S.tasks || [];
   const completedTasks = tasks.filter(t=>t.done).length;
   const taskPct = tasks.length ? Math.round((completedTasks / tasks.length) * 100) : 0;
@@ -1295,7 +1267,6 @@ function updateDashboard() {
 }
 
 // ── EDIT PERFIL & REGERAR TREINO ──
-
 function selEditDays(el) {
   document.querySelectorAll('.edit-days-chip').forEach(b => b.classList.remove('sel'));
   el.classList.add('sel');
@@ -1311,13 +1282,11 @@ function openEditProfile() {
   
   toggleEditEquipGroup();
 
-  // Pre-select days
   const curDays = S.profile.days || 3;
   document.querySelectorAll('.edit-days-chip').forEach(b => {
     b.classList.toggle('sel', parseInt(b.dataset.days) === curDays);
   });
   
-  // Set chips
   document.querySelectorAll('#edit-equip-group .eq-chip').forEach(chip => {
     const eq = chip.dataset.eq;
     chip.classList.toggle('sel', p.equipment && p.equipment.includes(eq));
@@ -1332,7 +1301,6 @@ function toggleEditEquipGroup() {
 }
 
 async function saveProfileEdits() {
-  // Ajuste inteligente automático de altura na edição
   let rawHeight = parseFloat(document.getElementById('edit-height').value);
   if (rawHeight > 0 && rawHeight < 3) {
     rawHeight = Math.round(rawHeight * 100);
@@ -1368,7 +1336,6 @@ async function saveProfileEdits() {
 
   closeM('m-edit-profile');
   
-  // Regerar treino na tela de loading
   document.getElementById('gen').classList.add('show');
   try {
     const equipStr = p.local === 'academia' ? 'Academia Padrão de Musculação' : (p.equipment || []).join(', ');
@@ -1487,7 +1454,6 @@ function updateCardio(dayId) {
 
 function adjMins(dayId, delta) {
   const day=S.workout.days.find(d=>d.id===dayId); if(!day) return;
-  // Força a conversão para número limpo, ignorando letras
   const cur=parseInt(day.cardio.minutes)||15; 
   const novo=Math.max(5, Math.min(60, cur+delta));
   day.cardio.minutes=novo;
@@ -1504,7 +1470,6 @@ function toggleTimer(dayId) {
     btn.textContent='Iniciar'; btn.classList.remove('running'); return;
   }
   const day=S.workout.days.find(d=>d.id===dayId);
-  // Garante que o tempo sempre será um número puro para não bugar o relógio
   const mins=day?parseInt(day.cardio.minutes)||15:15;
   let s=mins*60;
   
@@ -1544,7 +1509,6 @@ function renderSets(dayId,exIdx,numSets,repsStr) {
   if(card) card.classList.toggle('done',S.sets[k].filter(Boolean).length===numSets);
 }
 
-// LÓGICA DO TIMER DE DESCANSO
 let restIv = null;
 function startRest(secs = 60) {
   clearInterval(restIv);
@@ -1559,7 +1523,7 @@ function startRest(secs = 60) {
       clearInterval(restIv);
       rt.style.display = 'none';
       showToast("⏰ Fim do descanso! Bora pra próxima série!");
-      if("vibrate" in navigator) navigator.vibrate([200, 100, 200]); // Faz o celular vibrar
+      if("vibrate" in navigator) navigator.vibrate([200, 100, 200]); 
     } else {
       rs.textContent = s + 's';
     }
@@ -1580,11 +1544,10 @@ function toggleSet(dayId,exIdx,i,numSets,repsStr) {
   updateDashboard();
   if(dayId===curDay) checkFinish();
   
-  // ACIONA O DESCANSO SE A SÉRIE FOI CONCLUÍDA
   if(S.sets[k][i]) {
-    startRest(60); // Inicia o relógio de 60 segundos
+    startRest(60); 
   } else {
-    stopRest(); // Se desmarcou sem querer, cancela o timer
+    stopRest(); 
   }
 }
 
@@ -1638,7 +1601,7 @@ function editCarga(el,dayId,exIdx) {
   inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape'){inp.value=cur;inp.blur();}};
 }
 
-// ── SUBSTITUIR EXERCÍCIO (COMPATÍVEL COM VERCEL MINIFIER) ──
+// ── SUBSTITUIR EXERCÍCIO ──
 async function feedbackEx(dayId, exIdx, liked) {
   const day = S.workout.days.find(d => d.id === dayId);
   const ex = day.exercises[exIdx];
@@ -1660,7 +1623,7 @@ async function feedbackEx(dayId, exIdx, liked) {
       RETORNE EXCLUSIVAMENTE UM JSON VÁLIDO NESSE FORMATO E NADA MAIS:
       {"replacements":[{"name":"Nome","desc":"1. Como fazer: [dica]. 2. Erro comum: [erro]","carga":"Carga recomendada"}]}`;
       
-      const txt = await groq(prompt, 4000);
+      const txt = await groq(prompt, 600); // TOKEN REDUZIDO PARA NÃO BUGAR
       const parsed = JSON.parse(txt);
       
       document.getElementById('m-ex-body').textContent = 'Alternativas para "' + ex.name + '":';
@@ -1762,7 +1725,6 @@ async function logFood(){
   st.innerHTML = '<div class="ai-load"><div class="mini-spin"></div> Calculando calorias...</div>';
   
   try{
-  // Novo Prompt: Obriga a IA a pensar matematicamente antes de responder
     const prompt = `Atue como um nutricionista calculista (TACO/USDA). Avalie: "${txt}".
     REGRAS INQUEBRÁVEIS:
     1. Comida limpa caseira (batata, arroz, carne, milho) tem densidade média de 1.0 a 1.6 kcal/g.
@@ -1771,10 +1733,9 @@ async function logFood(){
     Responda EXCLUSIVAMENTE em JSON contendo seu raciocínio e o valor final:
     {"raciocinio": "300g de carne e batata. Densidade ~1.4. 300*1.4 = 420", "cal": 420, "desc": "Escondidinho batata/carne"}`;
     
-    const res=await groq(prompt, 4000);
+    const res=await groq(prompt, 200); // TOKEN REDUZIDO
     const p=JSON.parse(res);
     
-    // CORREÇÃO: Agora o código aceita o ZERO como valor válido, em vez de pular pro 350!
     const parsedCal = parseInt(p.cal);
     const caloriasPuras = isNaN(parsedCal) ? 350 : parsedCal; 
     
@@ -1839,7 +1800,7 @@ function drawChart(){
   data.forEach((_,i)=>{ctx.beginPath();ctx.arc(px(i),py(data[i]),3,0,Math.PI*2);ctx.fillStyle='#C8FF57';ctx.fill();});
 }
 
-// ── GELADEIRA (COMPATÍVEL COM VERCEL MINIFIER) ──
+// ── GELADEIRA ──
 function addIngr(){
   const inp=document.getElementById('ingr-inp'); if(!inp) return;
   const val=inp.value.trim(); if(!val) return;
@@ -1852,9 +1813,7 @@ function renderIngrs(){
   const c=document.getElementById('ingr-chips'); if(!c) return;
   if(!(S.ingrs||[]).length){c.innerHTML='<span style="font-size:11px;color:var(--muted2)">Nenhum ingrediente ainda.</span>';return;}
   
-  // Construção Segura do DOM:
   c.innerHTML=S.ingrs.map((item,idx) => {
-    // Quebra o texto e junta de forma segura para o HTML parseado não quebrar
     const safeItem = item.split("'").join("\\'");
     return `<div class="ingr-chip">${item}<button onclick="removeIngr('${safeItem}')">×</button></div>`;
   }).join('');
@@ -1943,7 +1902,6 @@ function showTab(id,el){
 
 function closeM(id){document.getElementById(id).classList.remove('open');}
 
-// Vinculando funções ao escopo Global para uso no HTML onclick/oninput
 window.goStep = goStep;
 window.validateStep2 = validateStep2;
 window.chk1 = chk1;
