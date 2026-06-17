@@ -15,6 +15,7 @@
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap');
+
 :root{
   --bg:#09090b;--surface:#18181b;--s2:#27272a;--border:rgba(255,255,255,0.08);
   --accent:#10b981;--adim:rgba(16,185,129,0.15);--amid:rgba(16,185,129,0.3);
@@ -24,6 +25,31 @@
   --red:#ef4444;--rdim:rgba(239,68,68,0.15);
 }
 
+/* ── OCULTAR EXERCÍCIOS CONCLUÍDOS ── */
+.card.done {
+  opacity: 0.6 !important;
+  max-height: 52px; /* Encolhe o cartão */
+  overflow: hidden;
+  cursor: pointer;
+}
+.card.done.reveal {
+  max-height: 500px; /* Expande se o usuário clicar */
+  opacity: 1 !important;
+}
+.card.done .ex-name::before {
+  content: '✅ ';
+  color: var(--accent);
+}
+ 
+/* ── MODO DESKTOP (Centraliza como um celular na tela do PC) ── */
+@media (min-width: 600px) {
+  body { display: flex; justify-content: center; background: #050505 !important; }
+  #app, #ob, #gen { width: 100%; max-width: 420px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+  header { max-width: 420px; margin: 0 auto; left: 0; right: 0; }
+  .finish-btn { max-width: 350px; }
+  .pwa-banner { max-width: 420px; margin: 0 auto; left: 0; right: 0; }
+}
+ 
 /* ── PROFUNDIDADE E ILUMINAÇÃO (Fim do visual chapado) ── */
 body {
   background: radial-gradient(circle at top, #181821 0%, var(--bg) 100%) !important;
@@ -303,6 +329,12 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
 <body>
 
 <div id="toast-container"></div>
+
+<!-- TIMER DE DESCANSO FLUTUANTE -->
+<div id="rest-timer" style="display:none; position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--surface); border:1px solid var(--border); color:var(--text); padding:10px 20px; border-radius:30px; z-index:100; font-weight:bold; box-shadow:0 8px 30px rgba(0,0,0,0.6); align-items:center; gap:12px;">
+  ⏳ Descanso: <span id="rest-sec" style="color:var(--accent); font-family:'Syne', sans-serif; font-size:16px;">60s</span>
+  <button onclick="stopRest()" style="background:var(--s2);border:1px solid var(--border);color:var(--muted);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px">×</button>
+</div>
 
 <!-- MODAL TERMOS DE USO -->
 <div class="modal-ov" id="m-terms">
@@ -1137,7 +1169,7 @@ async function startGen() {
   let workout=null;
   try {
     const equipStr = obP.local === 'academia' ? 'Academia Padrão de Musculação' : (obP.equipment || []).join(', ');
-    const prompt=`Crie um treino estruturado para: Nome: ${obP.name}, Sexo: ${obP.sexo}, Idade: ${obP.age}, Altura: ${obP.height}cm, Peso: ${obP.weight}kg, Objetivo: ${goalLbl(obP.goal)}, Biotipo: ${obP.biotipo}, Local de Treino: ${obP.local}, Equipamentos: ${equipStr}. Obs: ${obP.suggest}. Dias/sem: ${obP.days}. REGRA OBRIGATÓRIA: 5 a 7 exercícios por dia. O campo 'tip' DEVE ter este exato formato: "1. Como fazer: [dica de execução]. 2. Erro comum: [o que NÃO fazer]". Retorne EXCLUSIVAMENTE um JSON sem markdown: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":15,"note":"Ritmo leve"},"focus":"Foco do treino","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10-12","tip":"1. Como fazer: ... 2. Erro comum: ..."}]}]}.`;
+    const prompt=`Crie um treino estruturado para: Nome: ${obP.name}, Sexo: ${obP.sexo}, Idade: ${obP.age}, Altura: ${obP.height}cm, Peso: ${obP.weight}kg, Objetivo: ${goalLbl(obP.goal)}, Biotipo: ${obP.biotipo}, Local de Treino: ${obP.local}, Equipamentos: ${equipStr}. Obs: ${obP.suggest}. Dias/sem: ${obP.days}. REGRA OBRIGATÓRIA: Máximo de 4 a 5 exercícios por dia (priorize os compostos). O campo 'tip' DEVE ter este exato formato: "1. Como fazer: [dica de execução]. 2. Erro comum: [o que NÃO fazer]". Retorne EXCLUSIVAMENTE um JSON sem markdown: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":15,"note":"Ritmo leve"},"focus":"Foco do treino","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10-12","tip":"1. Como fazer: ... 2. Erro comum: ..."}]}]}.`;
     const txt = await groq(prompt, 4000);
     const parsed = JSON.parse(txt);
     workout = sanitizeWorkout(parsed);
@@ -1329,7 +1361,7 @@ async function saveProfileEdits() {
   document.getElementById('gen').classList.add('show');
   try {
     const equipStr = p.local === 'academia' ? 'Academia Padrão de Musculação' : (p.equipment || []).join(', ');
-    const prompt = `Crie uma série de musculação adaptada para: Sexo: ${p.sexo}, Idade: ${p.age}, Altura: ${p.height}cm, Peso: ${p.weight}kg, Objetivo: ${goalLbl(p.goal)}, Biotipo: ${p.biotipo}, Local de Treino: ${p.local}, Equipamentos: ${equipStr}. Obs: ${p.suggest}. Dias/sem: ${p.days}. REGRA OBRIGATÓRIA: 5 a 7 exercícios por dia. O campo 'tip' DEVE ter este exato formato: "1. Como fazer: [dica de execução]. 2. Erro comum: [o que NÃO fazer]". Retorne APENAS o JSON plano sem markdown ou tags: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":10,"note":"Leve"},"focus":"Foco","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10","tip":"1. Como fazer: ... 2. Erro comum: ..."}]}]}`;
+    const prompt = `Crie uma série de musculação adaptada para: Sexo: ${p.sexo}, Idade: ${p.age}, Altura: ${p.height}cm, Peso: ${p.weight}kg, Objetivo: ${goalLbl(p.goal)}, Biotipo: ${p.biotipo}, Local de Treino: ${p.local}, Equipamentos: ${equipStr}. Obs: ${p.suggest}. Dias/sem: ${p.days}. REGRA OBRIGATÓRIA: Máximo de 4 a 5 exercícios por dia (priorize os compostos). O campo 'tip' DEVE ter este exato formato: "1. Como fazer: [dica de execução]. 2. Erro comum: [o que NÃO fazer]". Retorne APENAS o JSON plano sem markdown ou tags: {"days":[{"id":"d1","label":"Dia","cardio":{"title":"Aquecimento","minutes":10,"note":"Leve"},"focus":"Foco","exercises":[{"id":"e0","name":"Nome","muscle":"Músculo","carga":"Carga","sets":3,"reps":"10","tip":"1. Como fazer: ... 2. Erro comum: ..."}]}]}`;
     const txt = await groq(prompt, 4000);
     const parsed = JSON.parse(txt);
     S.workout = sanitizeWorkout(parsed);
@@ -1408,7 +1440,7 @@ function buildDayHTML(day) {
     const carga=S.cargas[day.id+'-'+ei]||ex.carga;
     html+=`
       <div class="card" id="card-${day.id}-${ei}">
-        <div class="ex-hdr">
+        <div class="ex-hdr" onclick="this.parentElement.classList.toggle('reveal')">
           <div>
             <div class="ex-name">${ex.name}</div>
             <div class="ex-muscle">${ex.muscle}</div>
@@ -1501,6 +1533,58 @@ function renderSets(dayId,exIdx,numSets,repsStr) {
   if(card) card.classList.toggle('done',S.sets[k].filter(Boolean).length===numSets);
 }
 
+// LÓGICA DO TIMER DE DESCANSO
+let restIv = null;
+function startRest(secs = 60) {
+  clearInterval(restIv);
+  const rt = document.getElementById('rest-timer');
+  const rs = document.getElementById('rest-sec');
+  rt.style.display = 'flex';
+  let s = secs;
+  rs.textContent = s + 's';
+  restIv = setInterval(() => {
+    s--;
+    if (s <= 0) {
+      clearInterval(restIv);
+      rt.style.display = 'none';
+      showToast("⏰ Fim do descanso! Bora pra próxima série!");
+      if("vibrate" in navigator) navigator.vibrate([200, 100, 200]); // Faz o celular vibrar
+    } else {
+      rs.textContent = s + 's';
+    }
+  }, 1000);
+}
+function stopRest() {
+  clearInterval(restIv);
+  document.getElementById('rest-timer').style.display = 'none';
+}
+
+// LÓGICA DO TIMER DE DESCANSO
+let restIv = null;
+function startRest(secs = 60) {
+  clearInterval(restIv);
+  const rt = document.getElementById('rest-timer');
+  const rs = document.getElementById('rest-sec');
+  rt.style.display = 'flex';
+  let s = secs;
+  rs.textContent = s + 's';
+  restIv = setInterval(() => {
+    s--;
+    if (s <= 0) {
+      clearInterval(restIv);
+      rt.style.display = 'none';
+      showToast("⏰ Fim do descanso! Bora pra próxima série!");
+      if("vibrate" in navigator) navigator.vibrate([200, 100, 200]); // Faz o celular vibrar
+    } else {
+      rs.textContent = s + 's';
+    }
+  }, 1000);
+}
+function stopRest() {
+  clearInterval(restIv);
+  document.getElementById('rest-timer').style.display = 'none';
+}
+
 function toggleSet(dayId,exIdx,i,numSets,repsStr) {
   const k=dayId+'-'+exIdx;
   if(!S.sets[k]) S.sets[k]=[];
@@ -1510,6 +1594,13 @@ function toggleSet(dayId,exIdx,i,numSets,repsStr) {
   updateProg(dayId);
   updateDashboard();
   if(dayId===curDay) checkFinish();
+  
+  // ACIONA O DESCANSO SE A SÉRIE FOI CONCLUÍDA
+  if(S.sets[k][i]) {
+    startRest(60); // Inicia o relógio de 60 segundos
+  } else {
+    stopRest(); // Se desmarcou sem querer, cancela o timer
+  }
 }
 
 function updateProg(dayId) {
@@ -1580,7 +1671,11 @@ async function feedbackEx(dayId, exIdx, liked) {
 
     try {
       const equipList = S.profile.equipment || [];
-      const txt = await groq('Sugira 2 exercícios alternativos para "' + ex.name + '" (músculo: ' + ex.muscle + '). Equipamentos: ' + equipList.join(', ') + '. Retorne APENAS JSON: {"replacements":[{"name":"Nome","desc":"1. Como fazer: [dica]. 2. Erro comum: [erro]","carga":"Carga"}]}', 500);
+      const prompt = `Atue como personal trainer. Sugira 2 exercícios substitutos para "${ex.name}" (foco: ${ex.muscle}). Equipamentos: ${equipList.join(', ')}.
+      RETORNE EXCLUSIVAMENTE UM JSON VÁLIDO NESSE FORMATO E NADA MAIS:
+      {"replacements":[{"name":"Nome","desc":"1. Como fazer: [dica]. 2. Erro comum: [erro]","carga":"Carga recomendada"}]}`;
+      
+      const txt = await groq(prompt, 600);
       const parsed = JSON.parse(txt);
       
       document.getElementById('m-ex-body').textContent = 'Alternativas para "' + ex.name + '":';
