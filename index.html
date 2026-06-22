@@ -1435,12 +1435,23 @@ function buildDayHTML(day) {
   
   (day.exercises || []).forEach((ex,ei)=>{
     const carga=S.cargas[day.id+'-'+ei]||ex.carga;
+    
+    // 1. Cria a URL dinâmica para o YouTube usando encodeURIComponent
+    const ytQuery = encodeURIComponent("Como executar " + ex.name);
+    const ytLink = `https://www.youtube.com/results?search_query=${ytQuery}`;
+
     html+=`
       <div class="card" id="card-${day.id}-${ei}">
         <div class="ex-hdr" onclick="this.parentElement.classList.toggle('reveal')">
           <div>
             <div class="ex-name">${ex.name}</div>
             <div class="ex-muscle">${ex.muscle}</div>
+            
+            <!-- 2. Novo link do YouTube inserido aqui -->
+            <a href="${ytLink}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px; color:var(--blue); display:inline-flex; align-items:center; margin-top:4px; text-decoration:none; font-weight:600;">
+              ▶ Ver no YouTube
+            </a>
+            
           </div>
           <div class="ex-right">
             <span class="carga-badge" id="cg-${day.id}-${ei}" onclick="editCarga(this,'${day.id}',${ei})">${carga}</span>
