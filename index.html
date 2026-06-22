@@ -758,7 +758,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
   const cfg = {
@@ -1594,13 +1594,48 @@ function showDay(dayId,el) {
   el.classList.add('active'); curDay=dayId; checkFinish();
 }
 
-function finishWorkout() {
-  const day=S.workout.days.find(d=>d.id===curDay);
-  S.history.unshift({day:day.label,date:new Date().toLocaleDateString('pt-BR')});
-  day.exercises.forEach((_,ei)=>{S.sets[curDay+'-'+ei]=[];});
-  save(); initAllSets(); checkFinish(); 
-  showToast("🔥 Treino concluído! Excelente progresso!");
+async function finishWorkout() {
+  const day = S.workout.days.find(d => d.id === curDay);
+  const dataAtual = new Date().toLocaleDateString('pt-BR');
+  
+  // 1. Tentar salvar no Firebase PRIMEIRO
+  if (window._uid) {
+    try {
+      showToast("⏳ Salvando treino..."); // Feedback rápido pro usuário
+      
+      await addDoc(collection(db, 'historico_treinos'), {
+        userId: window._uid,
+        data: dataAtual,
+        treinoId: day.id,
+        treinoNome: day.label,
+        timestamp: new Date() // Salvar como data real facilita para criar gráficos depois
+      });
+    } catch (error) {
+      console.error("Erro ao salvar no Firebase:", error);
+      showToast("⚠️ O treino local foi concluído, mas houve um erro ao salvar na nuvem.");
+    }
+  }
+
+  // 2. Desmarca os exercícios e atualiza o progresso local
+  S.history.unshift({day: day.label, date: dataAtual});
+  day.exercises.forEach((_, ei) => { S.sets[curDay + '-' + ei] = []; });
+  save(); 
+  initAllSets(); 
+  checkFinish(); 
   updateDashboard();
+  
+  // 3. Exibe a mensagem visual amigável (usando a div verde que está no fim do seu HTML)
+  const toastSucesso = document.getElementById('toast-sucesso');
+  if (toastSucesso) {
+    toastSucesso.classList.remove('hidden');
+    // Esconde a mensagem após 4 segundos
+    setTimeout(() => {
+      toastSucesso.classList.add('hidden');
+    }, 4000);
+  } else {
+    // Fallback caso a div não seja encontrada
+    showToast("🔥 Treino concluído! Excelente progresso!");
+  }
 }
 
 function editCarga(el,dayId,exIdx) {
@@ -1983,6 +2018,14 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
 }
 </script>
+  <!-- Toast de Sucesso (Fica escondido por padrão usando a classe 'hidden') -->
+<div id="toast-sucesso" class="fixed bottom-4 right-4 hidden bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300 z-50 flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span class="font-semibold">Treino concluído com sucesso! Bom trabalho! 🚀</span>
+</div>
+  
 </body>
 </html>
 <!-- Vercel, acorda! -->
