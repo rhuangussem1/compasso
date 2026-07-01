@@ -758,6 +758,7 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  // 1. GARANTA QUE collection E addDoc ESTÃO NESTA LINHA:
   import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
@@ -774,6 +775,11 @@ header{padding:18px 18px 0;background:var(--bg);position:sticky;top:0;z-index:10
   const db = getFirestore(app);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
+
+  // 2. ADICIONE ESTAS 3 LINHAS PARA LIBERAR O ACESSO GLOBAL:
+  window.db = db;
+  window.addDoc = addDoc;
+  window.collection = collection;
 
   // Escuta do Estado de Autenticação para persistência e login automático
   onAuthStateChanged(auth, async (user) => {
