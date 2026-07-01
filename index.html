@@ -937,6 +937,7 @@ const def = () => {
   if(!S.history) S.history=[];
   if(!S.cargas) S.cargas={};
   if(!S.ingrs) S.ingrs=[];
+  if(!S.completedDays) S.completedDays=[]; // <-- Adicionado aqui
 };
 def();
 
@@ -1388,7 +1389,11 @@ function renderWorkout() {
   w.days.forEach((day,di) => {
     const btn=document.createElement('button');
     btn.className='day-btn'+(di===0?' active':'');
-    btn.textContent=day.label;
+    
+    // Mostra um ✅ no menu superior se o treino já estiver concluído na semana
+    const isCompleted = S.completedDays && S.completedDays.includes(day.id);
+    btn.textContent = (isCompleted ? '✅ ' : '') + day.label;
+    
     btn.onclick=()=>showDay(day.id,btn);
     sel.appendChild(btn);
     const div=document.createElement('div');
@@ -1494,6 +1499,12 @@ function adjMins(dayId, delta) {
 const fmt = s => Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
 
 function toggleTimer(dayId) {
+  // Impede de iniciar o cardio se o treino já estiver bloqueado/concluído
+  if(S.completedDays && S.completedDays.includes(dayId)) {
+    showToast("✅ Este treino já foi concluído! Feche o ciclo da semana para liberar novamente.");
+    return;
+  }
+  
   const btn=document.getElementById('timer-'+dayId);
   if(timerIv[dayId]) {
     clearInterval(timerIv[dayId]); delete timerIv[dayId]; delete timerMins[dayId];
@@ -1565,6 +1576,12 @@ function stopRest() {
 }
 
 function toggleSet(dayId,exIdx,i,numSets,repsStr) {
+  // Impede de clicar nas séries se o treino já estiver bloqueado/concluído
+  if(S.completedDays && S.completedDays.includes(dayId)) {
+    showToast("✅ Este treino já foi concluído! Feche o ciclo da semana para liberar novamente.");
+    return;
+  }
+
   const k=dayId+'-'+exIdx;
   if(!S.sets[k]) S.sets[k]=[];
   S.sets[k][i]=!S.sets[k][i];
@@ -1592,6 +1609,13 @@ function updateProg(dayId) {
 
 function checkFinish() {
   if(!curDay||!S.workout) return;
+  
+  // Esconde o botão de "Concluir Treino" se ele já foi finalizado no ciclo
+  if(S.completedDays && S.completedDays.includes(curDay)) {
+    document.getElementById('finish-btn').classList.remove('show');
+    return;
+  }
+
   const day=S.workout.days.find(d=>d.id===curDay); if(!day) return;
   const total=day.exercises.reduce((a,e)=>a+e.sets,0);
   let done=0; day.exercises.forEach((_,ei)=>{const k=curDay+'-'+ei;if(S.sets[k])done+=S.sets[k].filter(Boolean).length;});
@@ -1612,14 +1636,13 @@ async function finishWorkout() {
   // 1. Tentar salvar no Firebase PRIMEIRO
   if (window._uid) {
     try {
-      showToast("⏳ Salvando treino..."); // Feedback rápido pro usuário
-      
+      showToast("⏳ Salvando treino...");
       await addDoc(collection(db, 'historico_treinos'), {
         userId: window._uid,
         data: dataAtual,
         treinoId: day.id,
         treinoNome: day.label,
-        timestamp: new Date() // Salvar como data real facilita para criar gráficos depois
+        timestamp: new Date()
       });
     } catch (error) {
       console.error("Erro ao salvar no Firebase:", error);
@@ -1627,26 +1650,36 @@ async function finishWorkout() {
     }
   }
 
-  // 2. Desmarca os exercícios e atualiza o progresso local
+  // 2. Marca o dia como concluído na semana e adiciona ao histórico
+  if (!S.completedDays) S.completedDays = [];
+  if (!S.completedDays.includes(curDay)) S.completedDays.push(curDay);
   S.history.unshift({day: day.label, date: dataAtual});
-  day.exercises.forEach((_, ei) => { S.sets[curDay + '-' + ei] = []; });
-  save(); 
-  initAllSets(); 
-  checkFinish(); 
-  updateDashboard();
-  
-  // 3. Exibe a mensagem visual amigável (usando a div verde que está no fim do seu HTML)
-  const toastSucesso = document.getElementById('toast-sucesso');
-  if (toastSucesso) {
-    toastSucesso.classList.remove('hidden');
-    // Esconde a mensagem após 4 segundos
-    setTimeout(() => {
-      toastSucesso.classList.add('hidden');
-    }, 4000);
+
+  // 3. Verifica se todos os dias do treino foram concluídos (Fim do ciclo)
+  if (S.completedDays.length >= S.workout.days.length) {
+    // Se sim, zera as caixinhas de TODOS os treinos para a nova semana!
+    S.completedDays = [];
+    S.workout.days.forEach(d => {
+      d.exercises.forEach((_, ei) => {
+        S.sets[d.id + '-' + ei] = [];
+      });
+    });
+    showToast("🎉 Ciclo semanal concluído! Todos os treinos foram resetados para a próxima rodada.");
   } else {
-    // Fallback caso a div não seja encontrada
-    showToast("🔥 Treino concluído! Excelente progresso!");
+    // Se ainda faltam treinos na semana, mantém ele marcado e dá a notificação
+    const faltam = S.workout.days.length - S.completedDays.length;
+    const toastSucesso = document.getElementById('toast-sucesso');
+    if (toastSucesso) {
+      toastSucesso.classList.remove('hidden');
+      setTimeout(() => { toastSucesso.classList.add('hidden'); }, 4000);
+    } else {
+      showToast(`🔥 Treino salvo! Faltam ${faltam} dias para fechar o ciclo.`);
+    }
   }
+
+  save(); 
+  renderWorkout(); // Atualiza os botões lá em cima para mostrar o ✅
+  updateDashboard();
 }
 
 function editCarga(el,dayId,exIdx) {
